@@ -35,7 +35,16 @@ Component.reopen({
   init() {
     this._super(...arguments);
 
-    let name = this.get('componentCssClassName');
+    let name;
+    //hack for hot reloading because we proxy the component
+    if (this._debugContainerKey && this._debugContainerKey.match(/\-original$/)) {
+        name = this._debugContainerKey.replace('component:', '').replace(/-original$/, '');
+        if (podNames[name]) {
+            this.classNames.push(podNames[name]);
+        }
+    }
+
+    name = this.get('componentCssClassName');
 
     if (this.get('tagName') !== '' && name) {
       this.classNames = this.classNames.concat(name);
